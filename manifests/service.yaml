@@ -1,8 +1,9 @@
+apiVersion: v1
 kind: Service
 metadata:
   name: solar-system
   labels:
-    run: solar-system
+    app: solar-system
 spec:
   type: NodePort
   ports:
@@ -11,5 +12,5 @@ spec:
     protocol: TCP
     name: http
   selector:
-    run: solar-system
+    app: solar-system
 
