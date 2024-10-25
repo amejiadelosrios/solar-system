@@ -1,0 +1,11 @@
+# kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+images:
+- name: siddharth67/solar-system
+  newTag: v6
+
+resources:
+- deployment.yaml
+- service.yaml
