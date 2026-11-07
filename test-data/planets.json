@@ -1,0 +1,100 @@
+[{
+	"_id": {
+		"$oid": "6aef35f19f4d520657aa31f2"
+	},
+	"id": 0,
+	"name": "Sun",
+	"image": "images/sun.png",
+	"velocity": "220 km/s",
+	"distance": "0",
+	"description": "The Sun is the star at the center of the Solar System."
+},
+{
+	"_id": {
+		"$oid": "6aef35f19f4d520657aa31f3"
+	},
+	"id": 1,
+	"name": "Mercury",
+	"image": "images/mercury.png",
+	"velocity": "47 km/s",
+	"distance": "57.9 million km",
+	"description": "Mercury is the smallest planet and the closest to the Sun."
+},
+{
+	"_id": {
+		"$oid": "6aef35f19f4d520657aa31f4"
+	},
+	"id": 2,
+	"name": "Venus",
+	"image": "images/venus.png",
+	"velocity": "35 km/s",
+	"distance": "108.2 million km",
+	"description": "Venus is the hottest planet, with a thick toxic atmosphere."
+},
+{
+	"_id": {
+		"$oid": "6aef35f19f4d520657aa31f5"
+	},
+	"id": 3,
+	"name": "Earth",
+	"image": "images/earth.png",
+	"velocity": "29.8 km/s",
+	"distance": "149.6 million km",
+	"description": "Earth is the only known planet that harbors life."
+},
+{
+	"_id": {
+		"$oid": "6aef35f19f4d520657aa31f6"
+	},
+	"id": 4,
+	"name": "Mars",
+	"image": "images/mars.png",
+	"velocity": "24 km/s",
+	"distance": "227.9 million km",
+	"description": "Mars is the red planet, home of Olympus Mons."
+},
+{
+	"_id": {
+		"$oid": "6aef35f19f4d520657aa31f7"
+	},
+	"id": 5,
+	"name": "Jupiter",
+	"image": "images/jupiter.png",
+	"velocity": "13 km/s",
+	"distance": "778.5 million km",
+	"description": "Jupiter is the largest planet in the Solar System."
+},
+{
+	"_id": {
+		"$oid": "6aef35f19f4d520657aa31f8"
+	},
+	"id": 6,
+	"name": "Saturn",
+	"image": "images/saturn.png",
+	"velocity": "9.7 km/s",
+	"distance": "1.43 billion km",
+	"description": "Saturn is famous for its spectacular ring system."
+},
+{
+	"_id": {
+		"$oid": "6aef35f19f4d520657aa31f9"
+	},
+	"id": 7,
+	"name": "Uranus",
+	"image": "images/uranus.png",
+	"velocity": "6.8 km/s",
+	"distance": "2.87 billion km",
+	"description": "Uranus rotates on its side and is an ice giant."
+},
+{
+	"_id": {
+		"$oid": "6aef35f19f4d520657aa31fa"
+	},
+	"id": 8,
+	"name": "Neptune",
+	"image": "images/neptune.png",
+	"velocity": "5.4 km/s",
+	"distance": "4.5 billion km",
+	"description": "Neptune is the farthest planet, with supersonic winds."
+}]
+
