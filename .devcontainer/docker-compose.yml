@@ -1,0 +1,36 @@
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm
+    command: sleep infinity
+    working_dir: /workspaces/solar-system
+    volumes:
+      - ..:/workspaces/solar-system:cached
+      - node_modules:/workspaces/solar-system/node_modules
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/solar-system
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  mongodb:
+    image: mongo:7.0
+    restart: unless-stopped
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--quiet",
+          "mongodb://localhost:27017/admin",
+          "--eval",
+          "db.runCommand({ ping: 1 }).ok"
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  mongodb-data:
+  node_modules:

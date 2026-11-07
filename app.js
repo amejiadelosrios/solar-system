@@ -44,8 +44,7 @@ app.post('/planet',   function(req, res) {
         id: req.body.id
     }, function(err, planetData) {
         if (err) {
-            alert("Ooops, We only have 9 planets and a sun. Select a number from 0 - 9")
-            res.send("Error in Planet Data")
+            return res.status(500).send("Error in Planet Data")
         } else {
             res.send(planetData);
         }
