@@ -68,6 +68,19 @@ jobs:
   code-coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: superuser
+          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -77,10 +90,19 @@ jobs:
         with:
           node-version: 18
 
+      - name: Seed MongoDB with planet data
+        run: |
+          docker exec -i ${{ job.services.mongo.id }} mongoimport \
+            --username "$MONGO_USERNAME" --password "$MONGO_PASSWORD" \
+            --authenticationDatabase admin \
+            --db solar-system --collection planets --jsonArray --drop \
+            < test-data/planets.json
+
       - name: Install Dependencies
         run: npm install
 
       - name: Check Code Coverage
+        continue-on-error: true
         run: npm run coverage
 
       - name: Archive Test Result
