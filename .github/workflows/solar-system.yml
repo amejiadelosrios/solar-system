@@ -45,6 +45,12 @@ jobs:
         with:
           node-version: ${{ matrix.nodejs_version }}
 
+      - name: Cache NPM Dependencies 
+        uses: actions/cache@v3
+        with:
+          path: node_modules 
+          key: ${{ runner.os }}-node-modules-${{ hashFiles.('package-lock.json')}}
+         
       - name: Seed MongoDB with planet data
         run: |
           docker exec -i ${{ job.services.mongo.id }} mongoimport \
@@ -91,6 +97,12 @@ jobs:
         with:
           node-version: 18
 
+      - name: Cache NPM Dependencies 
+        uses: actions/cache@v3
+        with:
+          path: node_modules 
+          key: ${{ runner.os }}-node-modules-${{ hashFiles.('package-lock.json')}}
+          
       - name: Seed MongoDB with planet data
         run: |
           docker exec -i ${{ job.services.mongo.id }} mongoimport \
