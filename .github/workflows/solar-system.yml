@@ -16,12 +16,9 @@ jobs:
   unit-testing:
     name: Unit Testing
     strategy:
+      fail-fast: false
       matrix:
         nodejs_version: [18, 19, 20]
-        operating_system: [ubuntu-latest, macos-latest]
-        exclude:
-          - nodejs_version: 18
-            operating_system: macos-latest
     services:
       mongo:
         image: mongo:7.0
@@ -35,7 +32,7 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
-    runs-on: ${{ matrix.operating_system }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -49,7 +46,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: node_modules 
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json')}}
+          key: ${{ runner.os }}-node-${{ matrix.nodejs_version }}-modules-${{ hashFiles('package-lock.json')}}
          
       - name: Seed MongoDB with planet data
         run: |
@@ -63,13 +60,74 @@ jobs:
         run: npm install
 
       - name: Unit Testing
+        id: nodejs-unit-testing-step
         run: npm test
 
       - name: Archive Test Result
         if: steps.nodejs-unit-testing-step.outcome == 'failure' || steps.nodejs-unit-testing-step.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
-          name: Mocha-Test-Result
+          name: Mocha-Test-Result-ubuntu-node${{ matrix.nodejs_version }}
+          path: test-results.xml
+
+  # macOS runners have no Docker, so `services:` can't be used there.
+  # MongoDB is installed natively with Homebrew instead.
+  unit-testing-macos:
+    name: Unit Testing (macOS)
+    strategy:
+      fail-fast: false
+      matrix:
+        nodejs_version: [19, 20]
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS Version - ${{ matrix.nodejs_version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.nodejs_version }}
+
+      - name: Cache NPM Dependencies 
+        uses: actions/cache@v6
+        with:
+          path: node_modules 
+          key: ${{ runner.os }}-node-${{ matrix.nodejs_version }}-modules-${{ hashFiles('package-lock.json')}}
+
+      - name: Install and start MongoDB
+        run: |
+          brew tap mongodb/brew
+          brew install mongodb-community@7.0 mongosh mongodb-database-tools
+          brew services start mongodb/brew/mongodb-community@7.0
+          for i in $(seq 1 30); do
+            mongosh --quiet --eval 'db.runCommand({ ping: 1 })' && break
+            sleep 2
+          done
+
+      - name: Create MongoDB user
+        run: |
+          mongosh admin --quiet --eval "db.createUser({ user: '$MONGO_USERNAME', pwd: '$MONGO_PASSWORD', roles: ['root'] })"
+
+      - name: Seed MongoDB with planet data
+        run: |
+          mongoimport \
+            --username "$MONGO_USERNAME" --password "$MONGO_PASSWORD" \
+            --authenticationDatabase admin \
+            --db solar-system --collection planets --jsonArray --drop \
+            --file test-data/planets.json
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Unit Testing
+        id: nodejs-unit-testing-step
+        run: npm test
+
+      - name: Archive Test Result
+        if: steps.nodejs-unit-testing-step.outcome == 'failure' || steps.nodejs-unit-testing-step.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mocha-Test-Result-macos-node${{ matrix.nodejs_version }}
           path: test-results.xml
 
   code-coverage:
