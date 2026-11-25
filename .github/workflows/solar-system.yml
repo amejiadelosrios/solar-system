@@ -97,6 +97,7 @@ jobs:
       - name: Install and start MongoDB
         run: |
           brew tap mongodb/brew
+          brew trust mongodb/brew
           brew install mongodb-community@7.0 mongosh mongodb-database-tools
           brew services start mongodb/brew/mongodb-community@7.0
           for i in $(seq 1 30); do
